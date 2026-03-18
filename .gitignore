@@ -1,11 +1,12 @@
 # Local test data / credentials
 aol.txt
+test.txt
 
 # Runtime artifacts
-molsynk.log
+mailmole.log
 migration_state.json
 
 # Local build outputs
-molsynk
+mailmole
 *.exe
 *.out
