@@ -14,8 +14,8 @@ import (
 	"github.com/charmbracelet/bubbles/progress"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	imapconn "imapsync/internal/imap"
-	"imapsync/internal/sync"
+	imapconn "github.com/kocdeniz/mailmole/internal/imap"
+	"github.com/kocdeniz/mailmole/internal/sync"
 )
 
 // Init — start at the intro screen.
@@ -38,7 +38,7 @@ func introTick() tea.Cmd {
 func openLogFileCmd(path string) tea.Cmd {
 	return func() tea.Msg {
 		if strings.TrimSpace(path) == "" {
-			path = "molsynk.log"
+			path = "mailmole.log"
 		}
 
 		var cmd *exec.Cmd

@@ -1,4 +1,4 @@
-module imapsync
+module github.com/kocdeniz/mailmole
 
 go 1.24.2
 

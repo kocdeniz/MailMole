@@ -11,7 +11,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	imaplib "github.com/emersion/go-imap/v2"
-	"imapsync/internal/imap"
+	"github.com/kocdeniz/mailmole/internal/imap"
 )
 
 // StatusKind classifies each update sent to the UI.
@@ -56,14 +56,14 @@ type EngineConfig struct {
 
 func defaultEngineConfig() EngineConfig {
 	delay := 0 * time.Millisecond
-	if raw := os.Getenv("MOLSYNK_MESSAGE_DELAY_MS"); raw != "" {
+	if raw := os.Getenv("MAILMOLE_MESSAGE_DELAY_MS"); raw != "" {
 		if v, err := strconv.Atoi(raw); err == nil && v >= 0 {
 			delay = time.Duration(v) * time.Millisecond
 		}
 	}
 
 	workers := 3
-	if raw := os.Getenv("MOLSYNK_FOLDER_WORKERS"); raw != "" {
+	if raw := os.Getenv("MAILMOLE_FOLDER_WORKERS"); raw != "" {
 		if v, err := strconv.Atoi(raw); err == nil && v > 0 {
 			workers = v
 		}
@@ -317,7 +317,7 @@ func migrateFolder(src, dst *imap.Client, folder, account string, stats *Account
 		return nil
 	}
 
-	// Build destination Message-ID cache once per folder (imapsync-style speedup).
+	// Build destination Message-ID cache once per folder (O(1) speedup).
 	var dstCache map[string]bool
 	if err := retryIMAP(account, folder, "build destination cache", ch, r, func() {
 		increaseDelayOnRateLimit(mu, adaptiveGap)

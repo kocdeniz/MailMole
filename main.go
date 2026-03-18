@@ -1,4 +1,4 @@
-// imapsync - IMAP-to-IMAP mail migration tool
+// mailmole - IMAP-to-IMAP mail migration tool
 // Build with CGO_ENABLED=0 for maximum portability.
 package main
 
@@ -9,7 +9,7 @@ import (
 	"github.com/charmbracelet/bubbles/progress"
 	tea "github.com/charmbracelet/bubbletea"
 
-	"imapsync/internal/ui"
+	"github.com/kocdeniz/mailmole/internal/ui"
 )
 
 func main() {

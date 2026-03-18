@@ -9,8 +9,8 @@ import (
 	"github.com/charmbracelet/bubbles/progress"
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
-	imapconn "imapsync/internal/imap"
-	"imapsync/internal/sync"
+	imapconn "github.com/kocdeniz/mailmole/internal/imap"
+	"github.com/kocdeniz/mailmole/internal/sync"
 )
 
 // ---- Connection state --------------------------------------------------------
@@ -259,7 +259,7 @@ func (m *Model) AddLog(level LogLevel, text string) {
 func (m *Model) appendLogToFile(e LogEntry) {
 	path := m.LogFilePath
 	if path == "" {
-		path = "molsynk.log"
+		path = "mailmole.log"
 	}
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
 	if err != nil {
@@ -374,7 +374,7 @@ func NewModel(prog progress.Model) Model {
 		Inputs:      inputs,
 		BulkInputs:  bulkInputs,
 		LogView:     viewport.New(80, 8),
-		LogFilePath: "molsynk.log",
+		LogFilePath: "mailmole.log",
 		Progress:    prog,
 	}
 }

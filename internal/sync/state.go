@@ -25,7 +25,7 @@ type checkpointRecord struct {
 }
 
 func resolveStateFile() string {
-	if v := os.Getenv("MOLSYNK_STATE_FILE"); v != "" {
+	if v := os.Getenv("MAILMOLE_STATE_FILE"); v != "" {
 		return v
 	}
 	return DefaultStateFile

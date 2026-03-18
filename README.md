@@ -1,8 +1,8 @@
-# MOLSYNK
+# MailMole
 
-![MOLSYNK Header](molsynk_header.png)
+![MailMole Header](mailmole_header.png)
 
-MOLSYNK is a terminal-first IMAP-to-IMAP migration tool written in Go.
+MailMole is a terminal-first IMAP-to-IMAP migration tool written in Go.
 It is designed for practical mailbox migration with a clear TUI, low-memory
 message transfer, and compatibility with older Linux systems.
 
@@ -24,11 +24,11 @@ message transfer, and compatibility with older Linux systems.
 - Per-account fault isolation in bulk mode (continue on errors)
 - `CGO_ENABLED=0` compatible build
 
-## Why MOLSYNK is different
+## Why MailMole is different
 
 ### Smart Retry (resilience under real-world server pressure)
 
-MOLSYNK does not fail fast on transient IMAP/network errors. It automatically:
+MailMole does not fail fast on transient IMAP/network errors. It automatically:
 
 - Detects retryable errors (`timeout`, `server busy`, throttling patterns)
 - Retries with exponential backoff (`2s`, `5s`, `10s`) + jitter
@@ -38,9 +38,9 @@ MOLSYNK does not fail fast on transient IMAP/network errors. It automatically:
 This is especially important on SmarterMail and enterprise servers with
 throttling/rate-limit behavior.
 
-### O(1) Caching (imapsync-style speed path)
+### O(1) Caching (high-speed duplicate detection)
 
-Instead of running a slow duplicate search per message, MOLSYNK:
+Instead of running a slow duplicate search per message, MailMole:
 
 1. Loads destination folder `Message-ID` values once into memory
 2. Keeps them in a `map[string]bool`
@@ -66,13 +66,13 @@ go run .
 Build a static binary:
 
 ```bash
-CGO_ENABLED=0 go build -o molsynk .
+CGO_ENABLED=0 go build -o mailmole .
 ```
 
 Run the binary:
 
 ```bash
-./molsynk
+./mailmole
 ```
 
 ## Usage flow
@@ -138,7 +138,7 @@ the next item.
 
 ## Folder naming behavior
 
-MOLSYNK preserves server folder names exactly as returned by IMAP.
+MailMole preserves server folder names exactly as returned by IMAP.
 
 Example: if source uses `INBOX.Sent`, `INBOX.Drafts`, `INBOX.Archive`, those
 exact names are created/copied on destination. This is normal IMAP behavior.

@@ -1,0 +1,3 @@
+mustafaaydin@3yotomotiv.com,3Yotomotiv.,test1@1cenerji.com.tr,Admin1234!!
+barisyasar@3yotomotiv.com,Violasam.143,test2@1cenerji.com.tr,Admin1234!!
+partbender@3yotomotiv.com,Partbenderoto2024.,test3@1cenerji.com.tr,Admin1234!!

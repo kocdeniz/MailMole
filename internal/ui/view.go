@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	"github.com/charmbracelet/lipgloss"
-	"imapsync/internal/buildinfo"
+	"github.com/kocdeniz/mailmole/internal/buildinfo"
 )
 
 // View dispatches rendering to the active phase.
@@ -35,7 +35,7 @@ func (m Model) View() string {
 // PhaseIntro
 // ============================================================
 
-const molsynkArt = `
+const mailmoleArt = `
    /\_____/\
   /  o   o  \
  ( ==  ^  == )
@@ -56,16 +56,16 @@ var (
 // Fallback: portable ASCII art for CentOS/SSH/generic terminals.
 func getIntroSignature() string {
 	introSignatureOnce.Do(func() {
-		introSignatureArt = molsynkArt
+		introSignatureArt = mailmoleArt
 
-		if os.Getenv("MOLSYNK_NO_IMAGE") == "1" {
+		if os.Getenv("MAILMOLE_NO_IMAGE") == "1" {
 			return
 		}
 		if os.Getenv("TERM_PROGRAM") != "iTerm.app" {
 			return
 		}
 
-		imgPath := "molsynk_header.png"
+		imgPath := "mailmole_header.png"
 		data, err := os.ReadFile(imgPath)
 		if err != nil {
 			return
@@ -84,16 +84,16 @@ func getIntroSignature() string {
 func (m Model) viewIntro() string {
 	hero := getIntroSignature()
 	heroStyle := lipgloss.NewStyle().Foreground(colorPrimary).Bold(true)
-	if hero != molsynkArt {
+	if hero != mailmoleArt {
 		heroStyle = lipgloss.NewStyle()
 	} else {
-		hero = renderAnimatedASCII(molsynkArt, m.IntroFrame)
+		hero = renderAnimatedASCII(mailmoleArt, m.IntroFrame)
 		heroStyle = lipgloss.NewStyle()
 	}
 
 	content := lipgloss.JoinVertical(lipgloss.Center,
 		heroStyle.Render(hero),
-		lipgloss.NewStyle().Foreground(colorFg).Bold(true).MarginTop(1).Render("M O L S Y N K"),
+		lipgloss.NewStyle().Foreground(colorFg).Bold(true).MarginTop(1).Render("M A I L M O L E"),
 		lipgloss.NewStyle().Foreground(colorMuted).Render("High-performance IMAP Migration Tool"),
 		lipgloss.NewStyle().Foreground(colorBorder).Render(buildinfo.IntroLabel()),
 		lipgloss.NewStyle().Foreground(colorMuted).MarginTop(2).Render("Press any key to continue   [q] Quit"),
@@ -151,7 +151,7 @@ func lineStyleFor(i, highlight int) lipgloss.Style {
 func (m Model) viewSelect() string {
 	w := clamp(m.Width-8, 50, 90)
 	body := lipgloss.JoinVertical(lipgloss.Left,
-		TitleStyle.Render("MOLSYNK  --  Select Migration Mode"),
+		TitleStyle.Render("MAILMOLE  --  Select Migration Mode"),
 		lipgloss.NewStyle().Foreground(colorMuted).Render("Choose how to provide account credentials.")+"\n",
 		m.renderSelectOption("1", "Manual Entry",
 			"Enter source and destination credentials\ninteractively via a 6-field form."),
@@ -186,7 +186,7 @@ func (m Model) renderSelectOption(key, label, desc string) string {
 func (m Model) viewManual() string {
 	w := clamp(m.Width-8, 50, 100)
 	var sb strings.Builder
-	sb.WriteString(TitleStyle.Render("MOLSYNK  --  Manual Credentials") + "\n")
+	sb.WriteString(TitleStyle.Render("MAILMOLE  --  Manual Credentials") + "\n")
 	sb.WriteString(lipgloss.NewStyle().Foreground(colorMuted).
 		Render("Fill in both IMAP accounts, then press Enter on the last field.") + "\n\n")
 	sb.WriteString(SectionLabelStyle.Render("SOURCE SERVER") + "\n")
@@ -245,7 +245,7 @@ func (m Model) viewBulk() string {
 	w := clamp(m.Width-8, 50, 90)
 	var sb strings.Builder
 
-	sb.WriteString(TitleStyle.Render("MOLSYNK  --  Bulk Migration") + "\n")
+	sb.WriteString(TitleStyle.Render("MAILMOLE  --  Bulk Migration") + "\n")
 	sb.WriteString(lipgloss.NewStyle().Foreground(colorMuted).
 		Render("Enter global server settings and the path to your accounts file.") + "\n\n")
 
@@ -330,7 +330,7 @@ func (m Model) renderFinalSummary() string {
 	title := lipgloss.NewStyle().
 		Foreground(colorPrimary).
 		Bold(true).
-		Render("MOLSYNK  --  Migration Complete")
+		Render("MAILMOLE  --  Migration Complete")
 
 	metricLabel := lipgloss.NewStyle().Foreground(colorMuted)
 	metricValue := lipgloss.NewStyle().Foreground(colorSuccess).Bold(true)
@@ -374,7 +374,7 @@ func (m Model) renderDashTitle() string {
 	case ModeManual:
 		mode = "  [Manual]"
 	}
-	return TitleStyle.Render("MOLSYNK  --  Migration Dashboard" + mode)
+	return TitleStyle.Render("MAILMOLE  --  Migration Dashboard" + mode)
 }
 
 func (m Model) renderConnections() string {

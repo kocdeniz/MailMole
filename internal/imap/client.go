@@ -1,4 +1,4 @@
-// Package imap wraps go-imap/v2 for MOLSYNK's connection, folder, and
+// Package imap wraps go-imap/v2 for MailMole's connection, folder, and
 // message-transfer needs. Every exported function that touches the network is
 // designed to be called inside a tea.Cmd. CGO_ENABLED=0 safe — pure Go TLS.
 package imap

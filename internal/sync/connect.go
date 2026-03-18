@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"imapsync/internal/imap"
+	"github.com/kocdeniz/mailmole/internal/imap"
 )
 
 // ---- Messages ----------------------------------------------------------------

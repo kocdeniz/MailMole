@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"imapsync/internal/imap"
+	"github.com/kocdeniz/mailmole/internal/imap"
 )
 
 // AccountPair describes one source→destination account migration.

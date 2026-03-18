@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"imapsync/internal/imap"
+	"github.com/kocdeniz/mailmole/internal/imap"
 )
 
 // AccountStats stores post-migration summary metrics for one account.
@@ -37,7 +37,7 @@ func SendMigrationReport(dst *imap.Client, stats AccountStats) error {
 		dur = 0
 	}
 
-	subject := fmt.Sprintf("[MOLSYNK] Migration Report - %s", stats.DestinationEmail)
+	subject := fmt.Sprintf("[MAILMOLE] Migration Report - %s", stats.DestinationEmail)
 	body := buildReportBody(status, stats, dataSize, dur)
 	raw := buildPlainTextEmail(stats.DestinationEmail, subject, body)
 
@@ -48,7 +48,7 @@ func buildReportBody(status string, stats AccountStats, size string, dur time.Du
 	lines := []string{
 		"Hello,",
 		"",
-		"Your MOLSYNK migration report is ready.",
+		"Your MailMole migration report is ready.",
 		"",
 		fmt.Sprintf("Migration Status: %s", status),
 		fmt.Sprintf("Account: %s", stats.AccountEmail),
@@ -56,7 +56,7 @@ func buildReportBody(status string, stats AccountStats, size string, dur time.Du
 		fmt.Sprintf("Total Data Size: %s", size),
 		fmt.Sprintf("Skipped Duplicates: %d", stats.SkippedDuplicates),
 		fmt.Sprintf("Duration: %s", dur.String()),
-		"Tools Used: MOLSYNK (Go-based Migration Tool)",
+		"Tools Used: MailMole (Go-based Migration Tool)",
 	}
 
 	if len(stats.FolderErrors) > 0 {
@@ -66,14 +66,14 @@ func buildReportBody(status string, stats AccountStats, size string, dur time.Du
 		}
 	}
 
-	lines = append(lines, "", "Regards,", "MOLSYNK")
+	lines = append(lines, "", "Regards,", "MailMole")
 	return strings.Join(lines, "\r\n")
 }
 
 func buildPlainTextEmail(to, subject, body string) []byte {
 	now := time.Now().Format(time.RFC1123Z)
 	headers := []string{
-		"From: MOLSYNK Report <noreply@molsynk.local>",
+		"From: MailMole Report <noreply@mailmole.local>",
 		fmt.Sprintf("To: %s", to),
 		fmt.Sprintf("Subject: %s", subject),
 		fmt.Sprintf("Date: %s", now),

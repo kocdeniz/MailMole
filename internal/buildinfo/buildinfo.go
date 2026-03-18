@@ -4,7 +4,7 @@ import "strings"
 
 // These values are set at build time with -ldflags -X.
 var (
-	Version   = "dev"
+	Version   = "1.2.0"
 	BuildDate = "unknown"
 )
 
@@ -15,7 +15,7 @@ func IntroLabel() string {
 	}
 	b := strings.TrimSpace(BuildDate)
 	if b == "" || b == "unknown" {
-		return "v" + v
+		return "MailMole v" + v
 	}
-	return "v" + v + "  build " + b
+	return "MailMole v" + v + "  build " + b
 }
