@@ -653,9 +653,9 @@ const dashboardHTML = `<!DOCTYPE html>
                             <button class="btn btn-secondary" onclick="exportAccounts()">
                                 📤 Export Current Setup
                             </button>
-                            <span style="color: #737373; font-size: 12px;">
-                                CSV Format: src_host,src_port,src_user,src_pass,dst_host,dst_port,dst_user,dst_pass
-                            </span>
+                            <button class="btn btn-secondary btn-sm" onclick="downloadExampleCSV()">
+                                📄 Example CSV
+                            </button>
                         </div>
                     </div>
 
@@ -1699,6 +1699,25 @@ const dashboardHTML = `<!DOCTYPE html>
                 });
                 log('success', 'Imported ' + lines.length + ' accounts from CSV');
             }
+        }
+
+        function downloadExampleCSV() {
+            const header = 'src_host,src_port,src_user,src_pass,dst_host,dst_port,dst_user,dst_pass';
+            const example1 = 'imap.gmail.com,993,eren@oldgmail.com,mypassword123,outlook.office365.com,993,eren@company.com,mypassword456';
+            const example2 = 'imap.yandex.com,993,ahmet@yandex.com,pass123,imap.gmail.com,993,ahmet@newgmail.com,pass456';
+            const example3 = 'mail.eski.com,993,mehmet@eski.com,secret1,mail.yeni.com,993,mehmet@yeni.com,secret2';
+            const exampleCSV = header + '\n' + example1 + '\n' + example2 + '\n' + example3;
+
+            const blob = new Blob([exampleCSV], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mailmole-example-import.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showInfo('Example CSV Downloaded', 'Downloaded mailmole-example-import.csv. Edit it with your accounts and import.');
+            log('info', 'Example CSV downloaded');
         }
 
         function exportAccounts() {
