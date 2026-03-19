@@ -53,34 +53,126 @@ for high throughput in large migrations.
 
 ## Requirements
 
-- Go 1.24+
+- Go 1.20+ (only for building from source)
 - IMAP access to both source and destination servers
 - Network access to IMAP ports (usually `993` for TLS)
 
-## Quick start
+## 🚀 Installation
 
-Download for Linux
+Choose one of the following installation methods:
+
+### Option 1: Automatic Installation (Recommended)
+
+Run the install script to automatically install dependencies and build:
+
 ```bash
-wget https://github.com/kocdeniz/MailMole/releases/download/v1.0.0/mailmole_linux
+# Clone the repository
+git clone https://github.com/kocdeniz/MailMole.git
+cd MailMole
+
+# Run installation script
+chmod +x install.sh
+./install.sh
 ```
 
-Run from source:
+The script will:
+- ✅ Check and install Go if needed
+- ✅ Download dependencies
+- ✅ Build the binary
+- ✅ Create example files
+- ✅ Set permissions
+
+### Option 2: Using Make
 
 ```bash
-go run .
+# Clone and enter directory
+git clone https://github.com/kocdeniz/MailMole.git
+cd MailMole
+
+# Install and build
+make install
+
+# Or just build (if Go is already installed)
+make build
 ```
 
-Build a static binary:
+Available make commands:
+```bash
+make help       # Show all commands
+make build      # Build the binary
+make run        # Run with terminal UI
+make web        # Run with web dashboard
+make install    # Full installation
+make clean      # Clean build artifacts
+make test       # Run tests
+make release    # Build for all platforms
+make docker-build  # Build Docker image
+make setup      # Setup project directories
+```
+
+### Option 3: Using Docker
 
 ```bash
+# Build and run with Docker
+docker-compose up --build
+
+# Or manually
+docker build -t mailmole .
+docker run -p 8080:8080 mailmole
+```
+
+Access at: `http://localhost:8080`
+
+### Option 4: Download Pre-built Binary
+
+```bash
+# Linux (amd64)
+wget https://github.com/kocdeniz/MailMole/releases/latest/download/mailmole_linux_amd64
+chmod +x mailmole_linux_amd64
+./mailmole_linux_amd64
+
+# macOS (amd64)
+wget https://github.com/kocdeniz/MailMole/releases/latest/download/mailmole_darwin_amd64
+chmod +x mailmole_darwin_amd64
+./mailmole_darwin_amd64
+
+# Windows
+# Download mailmole_windows_amd64.exe from releases page
+```
+
+### Option 5: Build from Source
+
+```bash
+# Clone repository
+git clone https://github.com/kocdeniz/MailMole.git
+cd MailMole
+
+# Download dependencies
+go mod download
+
+# Build
 CGO_ENABLED=0 go build -o mailmole .
-```
 
-Run the binary:
-
-```bash
+# Run
 ./mailmole
 ```
+
+## Quick Start
+
+After installation, start MailMole:
+
+```bash
+# Terminal UI (default)
+./mailmole
+
+# Web Dashboard
+./mailmole -web :8080
+
+# Web Dashboard only (no terminal)
+./mailmole -web :8080 -web-only
+```
+
+Then open `http://localhost:8080` for web interface.
 
 ## Usage flow
 
