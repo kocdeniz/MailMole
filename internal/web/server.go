@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -112,6 +113,7 @@ func NewServer(addr string) *Server {
 	mux.HandleFunc("/ws", srv.handleWebSocket)
 	mux.HandleFunc("/api/start", srv.handleStart)
 	mux.HandleFunc("/api/stop", srv.handleStop)
+	mux.HandleFunc("/locales/", srv.handleLocales)
 
 	srv.httpSrv = &http.Server{
 		Addr:         addr,
@@ -911,4 +913,77 @@ func (s *Server) handleValidate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(results)
+}
+
+func (s *Server) handleLocales(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract language code from path (e.g., /locales/en.json -> en)
+	path := r.URL.Path[len("/locales/"):]
+	if path == "" || path == "/" {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string][]string{
+			"available": {"en", "tr"},
+		})
+		return
+	}
+
+	// Remove .json extension if present
+	lang := strings.TrimSuffix(path, ".json")
+
+	// Supported languages
+	locales := map[string]string{
+		"en": `{
+  "app": {
+    "name": "MailMole",
+    "tagline": "Professional IMAP Migration Tool"
+  },
+  "nav": {
+    "migration": "Migration",
+    "connectionSetup": "Connection Setup",
+    "preview": "Preview",
+    "progress": "Progress",
+    "history": "History",
+    "activityLogs": "Activity Logs"
+  },
+  "buttons": {
+    "testConnection": "Test Connection",
+    "detailedTest": "Detailed Test",
+    "previewMigration": "Preview Migration",
+    "startMigration": "Start Migration"
+  }
+}`,
+		"tr": `{
+  "app": {
+    "name": "MailMole",
+    "tagline": "Profesyonel IMAP Migration Aracı"
+  },
+  "nav": {
+    "migration": "Migration",
+    "connectionSetup": "Bağlantı Ayarları",
+    "preview": "Önizleme",
+    "progress": "İlerleme",
+    "history": "Geçmiş",
+    "activityLogs": "Aktivite Günlükleri"
+  },
+  "buttons": {
+    "testConnection": "Bağlantıyı Test Et",
+    "detailedTest": "Detaylı Test",
+    "previewMigration": "Migration Önizle",
+    "startMigration": "Migration Başlat"
+  }
+}`,
+	}
+
+	localeData, exists := locales[lang]
+	if !exists {
+		http.Error(w, "Locale not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(localeData))
 }

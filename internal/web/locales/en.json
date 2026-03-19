@@ -1,0 +1,189 @@
+{
+  "app": {
+    "name": "MailMole",
+    "tagline": "Professional IMAP Migration Tool"
+  },
+  "nav": {
+    "migration": "Migration",
+    "connectionSetup": "Connection Setup",
+    "preview": "Preview",
+    "progress": "Progress",
+    "history": "History",
+    "activityLogs": "Activity Logs"
+  },
+  "setup": {
+    "title": "Connection Setup",
+    "subtitle": "Configure source and destination IMAP servers",
+    "singleAccount": "Single Account",
+    "bulkMigration": "Bulk Migration",
+    "templates": {
+      "title": "Quick Templates",
+      "description": "Select a predefined server configuration",
+      "gmailSource": "Gmail (Source)",
+      "gmailDest": "Gmail (Dest)",
+      "outlookSource": "Outlook (Source)",
+      "outlookDest": "Outlook (Dest)",
+      "yandexSource": "Yandex (Source)",
+      "yandexDest": "Yandex (Dest)",
+      "icloudSource": "iCloud (Source)",
+      "icloudDest": "iCloud (Dest)"
+    },
+    "importExport": {
+      "title": "Import / Export",
+      "import": "Import Accounts (CSV/JSON)",
+      "export": "Export Current Setup",
+      "csvFormat": "CSV Format: src_host,src_port,src_user,src_pass,dst_host,dst_port,dst_user,dst_pass"
+    }
+  },
+  "source": {
+    "title": "Source Server",
+    "host": "Host",
+    "port": "Port",
+    "username": "Username",
+    "password": "Password",
+    "useTLS": "Use TLS/SSL"
+  },
+  "destination": {
+    "title": "Destination Server",
+    "host": "Host",
+    "port": "Port",
+    "username": "Username",
+    "password": "Password",
+    "useTLS": "Use TLS/SSL"
+  },
+  "bulk": {
+    "title": "Bulk Migration Accounts",
+    "description": "Add multiple accounts. Each account can have different source and destination servers.",
+    "addAccount": "Add Account",
+    "accountNumber": "Account #",
+    "remove": "Remove",
+    "quickActions": "Quick Actions",
+    "template": "Templates"
+  },
+  "schedule": {
+    "title": "Schedule Migration",
+    "startTime": "Start Time",
+    "repeat": "Repeat",
+    "options": {
+      "once": "One Time",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "enable": "Enable Scheduling",
+    "description": "Migration will automatically start at the scheduled time. Leave disabled to run immediately."
+  },
+  "buttons": {
+    "testConnection": "Test Connection",
+    "detailedTest": "Detailed Test",
+    "previewMigration": "Preview Migration",
+    "testAllConnections": "Test All Connections",
+    "previewAllAccounts": "Preview All Accounts",
+    "startMigration": "Start Migration",
+    "stopMigration": "Stop Migration",
+    "back": "Back",
+    "continue": "Continue",
+    "cancel": "Cancel"
+  },
+  "preview": {
+    "title": "Migration Preview",
+    "subtitle": "Review folders and select which ones to migrate",
+    "totalFolders": "Total Folders",
+    "totalMessages": "Total Messages",
+    "selected": "Selected",
+    "estSize": "Est. Size",
+    "folders": "Folders",
+    "selectAll": "Select All",
+    "selectNone": "Select None",
+    "folderName": "Folder Name",
+    "messages": "Messages",
+    "size": "Size"
+  },
+  "progress": {
+    "title": "Migration Progress",
+    "subtitle": "Real-time migration status",
+    "status": "Status",
+    "progress": "Progress",
+    "messages": "Messages",
+    "speed": "Speed",
+    "overallProgress": "Overall Progress",
+    "activeAccounts": "Active Accounts",
+    "account": "Account",
+    "idle": "Idle",
+    "running": "Running",
+    "completed": "Completed"
+  },
+  "validation": {
+    "title": "Connection Validation Results",
+    "subtitle": "Detailed test results for all accounts",
+    "totalAccounts": "Total Accounts",
+    "successful": "Successful",
+    "failed": "Failed",
+    "testResults": "Test Results",
+    "exportResults": "Export Results",
+    "source": "Source",
+    "destination": "Destination",
+    "details": "Details"
+  },
+  "logs": {
+    "title": "Activity Logs",
+    "subtitle": "Detailed migration logs"
+  },
+  "toast": {
+    "connectionSuccess": {
+      "title": "Connection Test Passed",
+      "message": "Both source and destination servers are reachable and credentials are valid."
+    },
+    "connectionFailed": {
+      "title": "Connection Test Failed"
+    },
+    "allConnectionsSuccess": {
+      "title": "All Connections Successful",
+      "message": "{count} accounts tested successfully. All connections are working!"
+    },
+    "allConnectionsFailed": {
+      "title": "All Connections Failed",
+      "message": "All {count} accounts failed to connect. Please check your credentials and server settings."
+    },
+    "partialSuccess": {
+      "title": "Partial Success",
+      "message": "{success} accounts connected successfully, {failed} failed. Check the validation page for details."
+    },
+    "previewLoaded": {
+      "title": "Preview Loaded",
+      "message": "Found {folders} folders with {messages} messages. Select which folders to migrate."
+    },
+    "bulkPreviewLoaded": {
+      "title": "Preview Loaded",
+      "message": "Found {accounts} accounts with {folders} folders and {messages} total messages."
+    },
+    "missingFields": {
+      "title": "Missing Fields",
+      "message": "Please fill in all required fields"
+    },
+    "noAccounts": {
+      "title": "No Accounts",
+      "message": "Please add at least one account to test"
+    },
+    "templateApplied": {
+      "title": "Template Applied",
+      "message": "Applied {template} template to all accounts"
+    },
+    "importSuccess": {
+      "title": "Import Successful",
+      "message": "Imported {count} accounts from CSV"
+    },
+    "exportSuccess": {
+      "title": "Export Successful",
+      "message": "Configuration exported successfully"
+    }
+  },
+  "status": {
+    "testing": "Testing...",
+    "pending": "Pending",
+    "success": "✓ OK",
+    "failed": "✗ Failed",
+    "connected": "✓ Connected",
+    "error": "✗ Error"
+  }
+}

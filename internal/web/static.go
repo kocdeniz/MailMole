@@ -579,6 +579,14 @@ const dashboardHTML = `<!DOCTYPE html>
                 <div class="nav-title">History</div>
                 <div class="nav-item" onclick="showPage('logs')">Activity Logs</div>
             </div>
+
+            <div class="nav-section" style="margin-top: auto;">
+                <div class="nav-title">Language / Dil</div>
+                <select id="language-selector" onchange="changeLanguage(this.value)" style="width: 100%; background: #1a1a1a; border: 1px solid #333; color: #e5e5e5; padding: 8px; border-radius: 6px; font-size: 14px;">
+                    <option value="en">🇬🇧 English</option>
+                    <option value="tr">🇹🇷 Türkçe</option>
+                </select>
+            </div>
         </aside>
 
         <!-- Main Content -->
@@ -1020,6 +1028,79 @@ const dashboardHTML = `<!DOCTYPE html>
 
         function showWarning(title, message) {
             showToast('warning', title, message);
+        }
+
+        // ========== LANGUAGE SUPPORT ==========
+        let currentLocale = 'en';
+        let translations = {};
+
+        async function loadLocale(lang) {
+            try {
+                const response = await fetch('/locales/' + lang + '.json');
+                translations = await response.json();
+                currentLocale = lang;
+                applyTranslations();
+                localStorage.setItem('mailmole-language', lang);
+            } catch (err) {
+                console.error('Failed to load locale:', err);
+            }
+        }
+
+        function t(key, params = {}) {
+            const keys = key.split('.');
+            let value = translations;
+            
+            for (const k of keys) {
+                if (value && value[k] !== undefined) {
+                    value = value[k];
+                } else {
+                    return key; // Return key if translation not found
+                }
+            }
+            
+            // Replace parameters
+            if (typeof value === 'string') {
+                return value.replace(/\{(\w+)\}/g, (match, param) => params[param] || match);
+            }
+            
+            return value;
+        }
+
+        function applyTranslations() {
+            // Update static text elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const translation = t(key);
+                if (translation !== key) {
+                    if (el.tagName === 'INPUT' && el.placeholder) {
+                        el.placeholder = translation;
+                    } else {
+                        el.textContent = translation;
+                    }
+                }
+            });
+            
+            // Update document title
+            document.title = t('app.name') + ' - ' + t('app.tagline');
+        }
+
+        function changeLanguage(lang) {
+            loadLocale(lang);
+            showInfo('Language Changed', 'Language switched to ' + (lang === 'tr' ? 'Türkçe' : 'English'));
+        }
+
+        // Load saved language preference
+        const savedLanguage = localStorage.getItem('mailmole-language');
+        if (savedLanguage) {
+            document.getElementById('language-selector').value = savedLanguage;
+            loadLocale(savedLanguage);
+        } else {
+            // Detect browser language
+            const browserLang = navigator.language.split('-')[0];
+            if (browserLang === 'tr') {
+                document.getElementById('language-selector').value = 'tr';
+                loadLocale('tr');
+            }
         }
 
         function showPage(page) {

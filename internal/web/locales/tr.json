@@ -1,0 +1,189 @@
+{
+  "app": {
+    "name": "MailMole",
+    "tagline": "Profesyonel IMAP Migration Aracı"
+  },
+  "nav": {
+    "migration": "Migration",
+    "connectionSetup": "Bağlantı Ayarları",
+    "preview": "Önizleme",
+    "progress": "İlerleme",
+    "history": "Geçmiş",
+    "activityLogs": "Aktivite Günlükleri"
+  },
+  "setup": {
+    "title": "Bağlantı Ayarları",
+    "subtitle": "Kaynak ve hedef IMAP sunucularını yapılandırın",
+    "singleAccount": "Tek Hesap",
+    "bulkMigration": "Toplu Migration",
+    "templates": {
+      "title": "Hazır Şablonlar",
+      "description": "Önceden tanımlanmış sunucu yapılandırması seçin",
+      "gmailSource": "Gmail (Kaynak)",
+      "gmailDest": "Gmail (Hedef)",
+      "outlookSource": "Outlook (Kaynak)",
+      "outlookDest": "Outlook (Hedef)",
+      "yandexSource": "Yandex (Kaynak)",
+      "yandexDest": "Yandex (Hedef)",
+      "icloudSource": "iCloud (Kaynak)",
+      "icloudDest": "iCloud (Hedef)"
+    },
+    "importExport": {
+      "title": "İçe Aktar / Dışa Aktar",
+      "import": "Hesapları İçe Aktar (CSV/JSON)",
+      "export": "Mevcut Ayarları Dışa Aktar",
+      "csvFormat": "CSV Formatı: src_host,src_port,src_user,src_pass,dst_host,dst_port,dst_user,dst_pass"
+    }
+  },
+  "source": {
+    "title": "Kaynak Sunucu",
+    "host": "Sunucu",
+    "port": "Port",
+    "username": "Kullanıcı Adı",
+    "password": "Şifre",
+    "useTLS": "TLS/SSL Kullan"
+  },
+  "destination": {
+    "title": "Hedef Sunucu",
+    "host": "Sunucu",
+    "port": "Port",
+    "username": "Kullanıcı Adı",
+    "password": "Şifre",
+    "useTLS": "TLS/SSL Kullan"
+  },
+  "bulk": {
+    "title": "Toplu Migration Hesapları",
+    "description": "Birden fazla hesap ekleyin. Her hesap farklı kaynak ve hedef sunuculara sahip olabilir.",
+    "addAccount": "Hesap Ekle",
+    "accountNumber": "Hesap #",
+    "remove": "Kaldır",
+    "quickActions": "Hızlı İşlemler",
+    "template": "Şablonlar"
+  },
+  "schedule": {
+    "title": "Migration Zamanla",
+    "startTime": "Başlangıç Zamanı",
+    "repeat": "Tekrar",
+    "options": {
+      "once": "Bir Kere",
+      "daily": "Günlük",
+      "weekly": "Haftalık",
+      "monthly": "Aylık"
+    },
+    "enable": "Zamanlamayı Etkinleştir",
+    "description": "Migration belirtilen zamanda otomatik başlayacaktır. Hemen başlatmak için devre dışı bırakın."
+  },
+  "buttons": {
+    "testConnection": "Bağlantıyı Test Et",
+    "detailedTest": "Detaylı Test",
+    "previewMigration": "Migration Önizle",
+    "testAllConnections": "Tüm Bağlantıları Test Et",
+    "previewAllAccounts": "Tüm Hesapları Önizle",
+    "startMigration": "Migration Başlat",
+    "stopMigration": "Migration Durdur",
+    "back": "Geri",
+    "continue": "Devam Et",
+    "cancel": "İptal"
+  },
+  "preview": {
+    "title": "Migration Önizleme",
+    "subtitle": "Klasörleri inceleyin ve hangilerini taşıyacağınızı seçin",
+    "totalFolders": "Toplam Klasör",
+    "totalMessages": "Toplam Mesaj",
+    "selected": "Seçili",
+    "estSize": "Tahmini Boyut",
+    "folders": "Klasörler",
+    "selectAll": "Tümünü Seç",
+    "selectNone": "Hiçbirini Seçme",
+    "folderName": "Klasör Adı",
+    "messages": "Mesajlar",
+    "size": "Boyut"
+  },
+  "progress": {
+    "title": "Migration İlerlemesi",
+    "subtitle": "Gerçek zamanlı migration durumu",
+    "status": "Durum",
+    "progress": "İlerleme",
+    "messages": "Mesajlar",
+    "speed": "Hız",
+    "overallProgress": "Genel İlerleme",
+    "activeAccounts": "Aktif Hesaplar",
+    "account": "Hesap",
+    "idle": "Beklemede",
+    "running": "Çalışıyor",
+    "completed": "Tamamlandı"
+  },
+  "validation": {
+    "title": "Bağlantı Doğrulama Sonuçları",
+    "subtitle": "Tüm hesaplar için detaylı test sonuçları",
+    "totalAccounts": "Toplam Hesap",
+    "successful": "Başarılı",
+    "failed": "Başarısız",
+    "testResults": "Test Sonuçları",
+    "exportResults": "Sonuçları Dışa Aktar",
+    "source": "Kaynak",
+    "destination": "Hedef",
+    "details": "Detaylar"
+  },
+  "logs": {
+    "title": "Aktivite Günlükleri",
+    "subtitle": "Detaylı migration günlükleri"
+  },
+  "toast": {
+    "connectionSuccess": {
+      "title": "Bağlantı Testi Başarılı",
+      "message": "Hem kaynak hem de hedef sunuculara erişilebiliyor ve kimlik bilgileri geçerli."
+    },
+    "connectionFailed": {
+      "title": "Bağlantı Testi Başarısız"
+    },
+    "allConnectionsSuccess": {
+      "title": "Tüm Bağlantılar Başarılı",
+      "message": "{count} hesap başarıyla test edildi. Tüm bağlantılar çalışıyor!"
+    },
+    "allConnectionsFailed": {
+      "title": "Tüm Bağlantılar Başarısız",
+      "message": "Tüm {count} hesap bağlantısı başarısız oldu. Lütfen kimlik bilgilerinizi ve sunucu ayarlarınızı kontrol edin."
+    },
+    "partialSuccess": {
+      "title": "Kısmen Başarılı",
+      "message": "{success} hesap başarıyla bağlandı, {failed} başarısız oldu. Detaylar için doğrulama sayfasını kontrol edin."
+    },
+    "previewLoaded": {
+      "title": "Önizleme Yüklendi",
+      "message": "{folders} klasör ve {messages} mesaj bulundu. Hangi klasörleri taşıyacağınızı seçin."
+    },
+    "bulkPreviewLoaded": {
+      "title": "Önizleme Yüklendi",
+      "message": "{accounts} hesap, {folders} klasör ve toplam {messages} mesaj bulundu."
+    },
+    "missingFields": {
+      "title": "Eksik Alanlar",
+      "message": "Lütfen tüm gerekli alanları doldurun"
+    },
+    "noAccounts": {
+      "title": "Hesap Yok",
+      "message": "Test etmek için lütfen en az bir hesap ekleyin"
+    },
+    "templateApplied": {
+      "title": "Şablon Uygulandı",
+      "message": "{template} şablonu tüm hesaplara uygulandı"
+    },
+    "importSuccess": {
+      "title": "İçe Aktarma Başarılı",
+      "message": "CSV'den {count} hesap içe aktarıldı"
+    },
+    "exportSuccess": {
+      "title": "Dışa Aktarma Başarılı",
+      "message": "Yapılandırma başarıyla dışa aktarıldı"
+    }
+  },
+  "status": {
+    "testing": "Test Ediliyor...",
+    "pending": "Beklemede",
+    "success": "✓ Tamam",
+    "failed": "✗ Başarısız",
+    "connected": "✓ Bağlandı",
+    "error": "✗ Hata"
+  }
+}
