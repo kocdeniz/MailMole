@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"os"
 	"strings"
 	"time"
 
@@ -112,6 +113,9 @@ func Connect(cfg Config) (*Client, error) {
 		err error
 	)
 	if cfg.TLS {
+		if isIPAddress(cfg.Host) && os.Getenv("MAILMOLE_ALLOW_INSECURE_IP_TLS") != "1" {
+			return nil, fmt.Errorf("tls verification for IP %s requires MAILMOLE_ALLOW_INSECURE_IP_TLS=1", cfg.Host)
+		}
 		tlsCfg := &tls.Config{
 			ServerName: cfg.Host,
 			MinVersion: tls.VersionTLS12,

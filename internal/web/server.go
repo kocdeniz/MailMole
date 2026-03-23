@@ -8,7 +8,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -22,12 +24,14 @@ var localesFS embed.FS
 
 // Server handles HTTP requests and WebSocket connections for the web dashboard
 type Server struct {
-	addr      string
-	mu        sync.RWMutex
-	httpSrv   *http.Server
-	clients   map[*Client]bool
-	broadcast chan Message
-	state     DashboardState
+	addr        string
+	mu          sync.RWMutex
+	httpSrv     *http.Server
+	clients     map[*Client]bool
+	broadcast   chan Message
+	state       DashboardState
+	authToken   string
+	requireAuth bool
 }
 
 // Client represents a WebSocket client connection
@@ -92,8 +96,12 @@ func NewServer(addr string) *Server {
 		addr = ":8080"
 	}
 
+	normalizedAddr, host := normalizeWebAddr(addr)
+	token := strings.TrimSpace(os.Getenv("MAILMOLE_WEB_TOKEN"))
+	requireAuth := !isLocalhost(host)
+
 	srv := &Server{
-		addr:      addr,
+		addr:      normalizedAddr,
 		clients:   make(map[*Client]bool),
 		broadcast: make(chan Message, 256),
 		state: DashboardState{
@@ -101,29 +109,32 @@ func NewServer(addr string) *Server {
 			Accounts: make([]AccountStatus, 0),
 			Logs:     make([]LogEntry, 0),
 		},
+		authToken:   token,
+		requireAuth: requireAuth,
 	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", srv.handleIndex)
-	mux.HandleFunc("/api/status", srv.handleStatus)
-	mux.HandleFunc("/api/logs", srv.handleLogs)
-	mux.HandleFunc("/api/test-connection", srv.handleTestConnection)
-	mux.HandleFunc("/api/preview", srv.handlePreview)
-	mux.HandleFunc("/api/bulk-preview", srv.handleBulkPreview)
-	mux.HandleFunc("/api/validate", srv.handleValidate)
-	mux.HandleFunc("/api/schedule", srv.handleSchedule)
-	mux.HandleFunc("/api/schedules", srv.handleGetSchedules)
-	mux.HandleFunc("/api/schedule/delete", srv.handleDeleteSchedule)
-	mux.HandleFunc("/ws", srv.handleWebSocket)
-	mux.HandleFunc("/api/start", srv.handleStart)
-	mux.HandleFunc("/api/stop", srv.handleStop)
+	mux.HandleFunc("/api/status", srv.authRequired(srv.handleStatus))
+	mux.HandleFunc("/api/logs", srv.authRequired(srv.handleLogs))
+	mux.HandleFunc("/api/test-connection", srv.authRequired(srv.handleTestConnection))
+	mux.HandleFunc("/api/preview", srv.authRequired(srv.handlePreview))
+	mux.HandleFunc("/api/bulk-preview", srv.authRequired(srv.handleBulkPreview))
+	mux.HandleFunc("/api/validate", srv.authRequired(srv.handleValidate))
+	mux.HandleFunc("/api/schedule", srv.authRequired(srv.handleSchedule))
+	mux.HandleFunc("/api/schedules", srv.authRequired(srv.handleGetSchedules))
+	mux.HandleFunc("/api/schedule/delete", srv.authRequired(srv.handleDeleteSchedule))
+	mux.HandleFunc("/ws", srv.authRequired(srv.handleWebSocket))
+	mux.HandleFunc("/api/start", srv.authRequired(srv.handleStart))
+	mux.HandleFunc("/api/stop", srv.authRequired(srv.handleStop))
 	mux.HandleFunc("/locales/", srv.handleLocales)
 
 	srv.httpSrv = &http.Server{
-		Addr:         addr,
-		Handler:      mux,
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 15 * time.Second,
+		Addr:              normalizedAddr,
+		Handler:           mux,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 
 	return srv
@@ -131,7 +142,10 @@ func NewServer(addr string) *Server {
 
 // Start starts the HTTP server
 func (s *Server) Start() error {
-	log.Printf("[WEB] Starting dashboard server on http://localhost%s", s.addr)
+	if s.requireAuth && s.authToken == "" {
+		return fmt.Errorf("web auth required for non-local address; set MAILMOLE_WEB_TOKEN")
+	}
+	log.Printf("[WEB] Starting dashboard server on http://%s", s.addr)
 	go s.broadcastLoop()
 	return s.httpSrv.ListenAndServe()
 }
@@ -341,7 +355,6 @@ func (s *Server) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	flusher, ok := w.(http.Flusher)
 	if !ok {
@@ -459,7 +472,7 @@ func (s *Server) handleTestConnection(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req CredentialRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := decodeJSON(w, r, &req); err != nil {
 		json.NewEncoder(w).Encode(map[string]interface{}{"success": false, "error": "Invalid JSON: " + err.Error()})
 		return
 	}
@@ -506,7 +519,7 @@ func (s *Server) handlePreview(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req CredentialRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := decodeJSON(w, r, &req); err != nil {
 		json.NewEncoder(w).Encode(map[string]interface{}{"error": "Invalid JSON: " + err.Error()})
 		return
 	}
@@ -577,7 +590,7 @@ func (s *Server) handleBulkPreview(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req BulkPreviewRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := decodeJSON(w, r, &req); err != nil {
 		json.NewEncoder(w).Encode(map[string]interface{}{"error": "Invalid JSON: " + err.Error()})
 		return
 	}
@@ -669,7 +682,7 @@ func (s *Server) handleStart(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req CredentialRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := decodeJSON(w, r, &req); err != nil {
 		json.NewEncoder(w).Encode(map[string]interface{}{"error": "Invalid JSON: " + err.Error()})
 		return
 	}
@@ -724,7 +737,7 @@ func (s *Server) handleSchedule(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req ScheduleRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := decodeJSON(w, r, &req); err != nil {
 		json.NewEncoder(w).Encode(map[string]interface{}{"error": "Invalid JSON: " + err.Error()})
 		return
 	}
@@ -849,7 +862,7 @@ func (s *Server) handleValidate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req ValidationRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := decodeJSON(w, r, &req); err != nil {
 		json.NewEncoder(w).Encode(map[string]interface{}{"error": "Invalid JSON: " + err.Error()})
 		return
 	}
@@ -947,4 +960,69 @@ func (s *Server) handleLocales(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(localeData)
+}
+
+const maxBodyBytes = 1 << 20
+
+func decodeJSON(w http.ResponseWriter, r *http.Request, v interface{}) error {
+	r.Body = http.MaxBytesReader(w, r.Body, maxBodyBytes)
+	dec := json.NewDecoder(r.Body)
+	return dec.Decode(v)
+}
+
+func (s *Server) authRequired(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if !s.authorized(r) {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		next(w, r)
+	}
+}
+
+func (s *Server) authorized(r *http.Request) bool {
+	if !s.requireAuth {
+		return true
+	}
+	if s.authToken == "" {
+		return false
+	}
+	if token := r.URL.Query().Get("token"); token != "" {
+		return token == s.authToken
+	}
+	if token := r.Header.Get("X-MailMole-Token"); token != "" {
+		return token == s.authToken
+	}
+	auth := r.Header.Get("Authorization")
+	if strings.HasPrefix(auth, "Bearer ") {
+		return strings.TrimSpace(strings.TrimPrefix(auth, "Bearer ")) == s.authToken
+	}
+	return false
+}
+
+func normalizeWebAddr(addr string) (string, string) {
+	if addr == "" {
+		addr = ":8080"
+	}
+	if strings.HasPrefix(addr, ":") {
+		host := "127.0.0.1"
+		return host + addr, host
+	}
+	host, _, err := net.SplitHostPort(addr)
+	if err != nil {
+		return addr, ""
+	}
+	if host == "" {
+		host = "127.0.0.1"
+	}
+	return addr, host
+}
+
+func isLocalhost(host string) bool {
+	switch host {
+	case "", "localhost", "127.0.0.1", "::1":
+		return true
+	default:
+		return false
+	}
 }

@@ -328,10 +328,12 @@ The web dashboard is perfect for:
 
 - Credentials are entered directly in the terminal UI.
 - For TLS connections made with a raw IP address, certificate verification is
-  relaxed to avoid hostname mismatch failures.
+  relaxed only when MAILMOLE_ALLOW_INSECURE_IP_TLS=1 is set.
 - For hostname-based connections, normal TLS hostname verification applies.
 - **Web Dashboard**: No authentication by default - only run on trusted networks
   or use firewall rules to restrict access.
+  If binding to a non-local address, set MAILMOLE_WEB_TOKEN and open the UI with
+  ?token=<value> to authenticate API requests.
 
 ## Project structure
 

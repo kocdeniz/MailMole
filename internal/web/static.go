@@ -996,9 +996,25 @@ const dashboardHTML = `<!DOCTYPE html>
         let folders = [];
         let selectedFolders = new Set();
         let eventSource = null;
+        let authToken = null;
 
         // Initialize with one bulk account
         addBulkAccount();
+
+        // Auth token support (from URL or localStorage)
+        const tokenParam = new URLSearchParams(window.location.search).get('token');
+        if (tokenParam) {
+            localStorage.setItem('mailmole-token', tokenParam);
+        }
+        authToken = localStorage.getItem('mailmole-token');
+
+        function authHeaders() {
+            const headers = { 'Content-Type': 'application/json' };
+            if (authToken) {
+                headers['Authorization'] = 'Bearer ' + authToken;
+            }
+            return headers;
+        }
 
         // Toast Notification Functions
         function showToast(type, title, message, duration = 5000) {
@@ -1206,7 +1222,7 @@ const dashboardHTML = `<!DOCTYPE html>
             try {
                 const response = await fetch('/api/test-connection', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify(creds)
                 });
                 
@@ -1258,7 +1274,7 @@ const dashboardHTML = `<!DOCTYPE html>
             try {
                 const response = await fetch('/api/validate', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({ accounts: accounts })
                 });
                 
@@ -1323,7 +1339,7 @@ const dashboardHTML = `<!DOCTYPE html>
             try {
                 const response = await fetch('/api/preview', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify(creds)
                 });
                 
@@ -1396,7 +1412,7 @@ const dashboardHTML = `<!DOCTYPE html>
             try {
                 const response = await fetch('/api/bulk-preview', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({ accounts: accounts })
                 });
                 
@@ -1837,7 +1853,7 @@ const dashboardHTML = `<!DOCTYPE html>
             try {
                 const response = await fetch('/api/validate', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({ accounts: [{
                         srcHost: creds.srcHost,
                         srcPort: creds.srcPort,
@@ -1925,7 +1941,7 @@ const dashboardHTML = `<!DOCTYPE html>
             try {
                 const response = await fetch('/api/validate', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({ accounts: accounts })
                 });
                 
